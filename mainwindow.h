@@ -22,7 +22,7 @@ private slots:
     void on_pushButton_clicked();
 
 private:
-    Game_Client game;
+    Game_Client *game;
     Ui::MainWindow *ui;
     QList <XO_Button*>buttons{};
     void button_to_index();

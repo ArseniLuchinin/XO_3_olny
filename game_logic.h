@@ -18,8 +18,10 @@ signals:
     void new_figure_position_from_server();
 protected slots:
     void set_char_on_pos_from_server();
+    void read_server();
 
 protected:
+    void connect_with_server();
     QTcpSocket *socket;
     const char current_figure = 'X';
 

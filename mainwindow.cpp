@@ -26,11 +26,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     button_to_index();
+    game = new Game_Client();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete game;
 }
 
 
