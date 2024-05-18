@@ -4,7 +4,7 @@
 
 Game_server::Game_server()
 {
-    if(this->listen(QHostAddress::Any, 123)){
+    if(this->listen(QHostAddress::LocalHost, 123)){
         qDebug() << "Serever is started";
     }
     else{
@@ -25,6 +25,7 @@ void Game_server::incomingConnection(qintptr handle){
     to_client << "con";
     socket->write(d);
     sockets.append(QSharedPointer<QTcpSocket>{socket});
+    qDebug() << "New connect: " << socket->socketDescriptor();
 }
 
 void Game_server::read_request(){
