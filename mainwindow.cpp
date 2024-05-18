@@ -16,7 +16,8 @@ void MainWindow::button_to_index(){
         p->set_index(++a);
         connect(p, SIGNAL(clicked()), SLOT(on_pushButton_clicked()));
     }
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->verticalLayout_2->addWidget(new QPushButton("Meow"));
 }
 
 MainWindow::MainWindow(QWidget *parent)
