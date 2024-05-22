@@ -16,7 +16,7 @@ void MainWindow::button_to_index(){
         p->set_index(++a);
         connect(p, SIGNAL(clicked()), SLOT(on_pushButton_clicked()));
     }
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(0);
     ui->verticalLayout_2->addWidget(new QPushButton("Meow"));
 }
 
@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     button_to_index();
     game = new Game_Client();
+    connect(game, &Game_Client::new_figure_position_from_server, this, &MainWindow::new_positon_from_server);
 }
 
 MainWindow::~MainWindow()
@@ -39,6 +40,10 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     XO_Button *buttonSender = qobject_cast<XO_Button*>(sender());
-    buttons[buttonSender->get_index()]->setText(QString::number(buttonSender->get_index()));
+    buttonSender->setText(QString::number(buttonSender->get_index()));
+    game->send_pos_to_server(buttonSender->get_index(), 1);
 }
 
+void MainWindow::new_positon_from_server(){
+    buttons[game->get_new_pos()]->setText(QString(game->get_game_subbol()));
+}

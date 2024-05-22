@@ -20,6 +20,7 @@ public:
 
 private slots:
     void on_pushButton_clicked();
+    void new_positon_from_server();
 
 private:
     Game_Client *game;
