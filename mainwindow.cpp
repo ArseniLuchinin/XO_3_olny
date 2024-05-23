@@ -11,13 +11,12 @@ void MainWindow::button_to_index(){
     buttons.append(ui->pushButton_7);
     buttons.append(ui->pushButton_8);
     buttons.append(ui->pushButton_9);
-    int a = -1;
-    for(XO_Button* &p : buttons){
-        p->set_index(++a);
-        connect(p, SIGNAL(clicked()), SLOT(on_pushButton_clicked()));
+    ui->pushButton->set_index(0);
+    for(int i = 1; i < buttons.length(); ++i){
+        buttons[i]->set_index(i);
+        connect((buttons[i]), SIGNAL(clicked()), SLOT(on_pushButton_clicked()));
     }
-    ui->stackedWidget->setCurrentIndex(0);
-    ui->verticalLayout_2->addWidget(new QPushButton("Meow"));
+
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -28,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
     button_to_index();
     game = new Game_Client();
     connect(game, &Game_Client::new_figure_position_from_server, this, &MainWindow::new_positon_from_server);
+    connect(game, &Game_Client::new_lobbie, this, &MainWindow::add_lobby_bytton);
+    game->send_lobbies_reqest();
 }
 
 MainWindow::~MainWindow()
@@ -40,10 +41,42 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     XO_Button *buttonSender = qobject_cast<XO_Button*>(sender());
-    buttonSender->setText(QString::number(buttonSender->get_index()));
     game->send_pos_to_server(buttonSender->get_index(), 1);
 }
 
 void MainWindow::new_positon_from_server(){
     buttons[game->get_new_pos()]->setText(QString(game->get_game_subbol()));
 }
+
+void MainWindow::add_lobby_bytton(){
+    lobbie_button* lb = new lobbie_button(
+                game->get_new_lobbie_id(),
+                "Game lobby #" +  QString::number(game->get_new_lobbie_id())
+                );
+    ui->verticalLayout_2->addWidget(lb);
+    connect(lb, &QPushButton::clicked, this, [lb, this](){
+        game->set_id(lb->get_lobby_id());
+        ui->stackedWidget->setCurrentIndex(0);
+    });
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    clear_lobbies_laoyt();
+    game->send_lobbies_reqest();
+    qDebug() << game->get_id();
+}
+
+void MainWindow::clear_lobbies_laoyt(){
+    QLayoutItem *child;
+     while ((child = ui->verticalLayout_2->takeAt(0)) != 0) {
+         ui->verticalLayout_2->removeItem(child);
+         delete child;
+    }
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+

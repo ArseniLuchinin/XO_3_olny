@@ -10,12 +10,14 @@ CONFIG += c++11
 
 SOURCES += \
     game_logic.cpp \
+    lobbie_button.cpp \
     main.cpp \
     mainwindow.cpp \
     xo_button.cpp
 
 HEADERS += \
     game_logic.h \
+    lobbie_button.h \
     mainwindow.h \
     xo_button.h
 
