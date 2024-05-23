@@ -9,15 +9,17 @@
 class Game_server : public QTcpServer
 {
     Q_OBJECT
-    void send_data_positoin_to_client(const qint32, const qint32);
+    void send_data_positoin_to_client(const qint32 id, const qint8, const qint8);
+    void send_lobbies_list();
+
 protected:
     QTcpSocket *socket;
     QList<QSharedPointer<QTcpSocket>> sockets;
+    QList<Game_lobby*> lobbies;
     QByteArray data;
 
 public:
     Game_server();
-
 public slots:
     void incomingConnection(qintptr handle) override;
     void read_request();
