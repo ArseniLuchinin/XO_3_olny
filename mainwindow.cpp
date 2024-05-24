@@ -57,6 +57,7 @@ void MainWindow::add_lobby_bytton(){
     connect(lb, &QPushButton::clicked, this, [lb, this](){
         game->set_id(lb->get_lobby_id());
         ui->stackedWidget->setCurrentIndex(0);
+
     });
 }
 

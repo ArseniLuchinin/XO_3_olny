@@ -33,6 +33,10 @@ void Game_Client::set_char_on_pos_from_server(){
 
 void Game_Client::set_id(const qint8 di){
     id = di;
+    data.clear();
+    QDataStream out{&data, QIODevice::WriteOnly};
+    out << qint8{SEND_LOBBY_SET_COD} << id;
+    socket->write(data);
 }
 
 
@@ -40,7 +44,7 @@ void Game_Client::send_pos_to_server(const qint8 n, const qint8 d){
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
-    qDebug() << "send to serv: " << n << " " << d;
+    //qDebug() << "send to serv: " << n << " " << d;
     out << qint8{SEND_POS_COD} << id << n << d;
     socket->write(data);
 }
