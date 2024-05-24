@@ -6,11 +6,16 @@
 
 #include "game_lobby.h"
 
+#define SEND_POS_COD 1
+#define SEND_LOBBIES_COD 2
+#define SEND_LOBBY_SET_COD 3
+
 class Game_server : public QTcpServer
 {
     Q_OBJECT
-    void send_data_positoin_to_client(const qint32 id, const qint8, const qint8);
-    void send_lobbies_list();
+    void send_data_positoin_to_client(const qint32 id, const qint8, const qint8, QTcpSocket*);
+    void send_lobbies_list(QTcpSocket*);
+    void handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket *sc);
 
 protected:
     QTcpSocket *socket;

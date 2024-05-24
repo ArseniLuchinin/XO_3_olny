@@ -29,21 +29,11 @@ void Game_server::read_request(){
     QDataStream in{socket};
     in.setVersion(QDataStream::Qt_5_9);
     if(in.status() == QDataStream::Ok){
-        qint8 new_pos, del_pos, cod;
-        qint32 id;
+        qint8 cod;
         in >> cod;
         qDebug() << "Cod: " << cod;
         //TODO: сделать нормальный метод
-        switch (cod) {
-            case SEND_LOBBIES_COD:
-                send_lobbies_list();
-                break;
-            case SEND_POS_COD:
-                in >> id >> new_pos >> del_pos;
-                qDebug() << "add:" << id << new_pos << ' ' << del_pos;
-                send_data_positoin_to_client(id, new_pos, del_pos);
-                break;
-        }
+        handle_reqests(cod, in, socket);
         // switch
 
     }
@@ -52,17 +42,40 @@ void Game_server::read_request(){
     }
 }
 
-void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, const qint8 d){
+void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* sc){
+    qint8 new_pos, del_pos;
+    qint32 id;
+    switch (cod) {
+        case SEND_LOBBIES_COD:
+            send_lobbies_list(socket);
+        break;
+
+        case SEND_POS_COD:
+            in >> id >> new_pos >> del_pos;
+            qDebug() << "add:" << id << new_pos << ' ' << del_pos;
+            send_data_positoin_to_client(id, new_pos, del_pos, socket);
+        break;
+
+        case SEND_LOBBY_SET_COD:
+            in >> id;
+            if(!lobbies[id]->is_ful()){
+                lobbies[id]->add_user(sc);
+            }
+        break;
+    }
+}
+
+void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, const qint8 d, QTcpSocket* sc){
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
     qDebug() << "send to client" << n << ' ' << d;
     out << qint8{SEND_POS_COD} << id << n << d;
-    socket = sockets[0].data();
-    socket->write(data);
+    sc = lobbies[id]->get_current_gamer_socket();
+    sc->write(data);
 }
 
-void Game_server::send_lobbies_list(){
+void Game_server::send_lobbies_list(QTcpSocket* sc){
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
@@ -77,5 +90,5 @@ void Game_server::send_lobbies_list(){
     }
     out.device()->seek(1);
     out << h;
-    socket->write(data);
+    sc->write(data);
 }
