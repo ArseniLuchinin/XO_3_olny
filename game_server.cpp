@@ -20,7 +20,6 @@ void Game_server::incomingConnection(qintptr handle){
     connect(socket, &QTcpSocket::readyRead, this, &Game_server::read_request);
     connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
 
-    sockets.append(QSharedPointer<QTcpSocket>{socket});
     qDebug() << "New connect: " << socket->socketDescriptor();
 
 }
@@ -32,7 +31,6 @@ void Game_server::read_request(){
         qint8 cod;
         in >> cod;
         qDebug() << "Cod: " << cod;
-        //TODO: сделать нормальный метод
         handle_reqests(cod, in, socket);
         // switch
 
@@ -60,9 +58,21 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
             in >> id;
             if(!lobbies[id]->is_ful()){
                 lobbies[id]->add_user(sc);
+                send_figure_to_client(sc);
+            }
+            else{
+                send_error(sc);
             }
         break;
     }
+}
+
+void Game_server::send_figure_to_client(QTcpSocket* sc){
+
+}
+
+void Game_server::send_error(QTcpSocket* sc){
+
 }
 
 void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, const qint8 d, QTcpSocket* sc){
@@ -70,6 +80,9 @@ void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, c
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
     qDebug() << "send to client" << n << ' ' << d;
+
+    lobbies[id]->add_position(n, d);
+
     out << qint8{SEND_POS_COD} << id << n << d;
     sc = lobbies[id]->get_current_gamer_socket();
     sc->write(data);
