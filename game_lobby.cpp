@@ -6,7 +6,7 @@ Game_lobby::Game_lobby()
         users[i].socket = nullptr;
     }
 
-    user_cont = 0;
+    user_conter = -1;
     users[0].figure = 'X';
     users[1].figure = 'O';
 
@@ -32,8 +32,12 @@ Game_lobby::~Game_lobby(){
 }
 
 void Game_lobby::add_user(QTcpSocket *n){
-    users[user_cont++].socket = n;
+    users[++user_conter].socket = n;
 
+}
+
+QChar Game_lobby::get_current_gamer_figure(){
+    return users[user_conter].figure;
 }
 
 void Game_lobby::add_position(const int8_t new_pos, const int8_t del_pos){

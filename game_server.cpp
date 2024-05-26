@@ -30,7 +30,7 @@ void Game_server::read_request(){
     if(in.status() == QDataStream::Ok){
         qint8 cod;
         in >> cod;
-        qDebug() << "Cod: " << cod;
+        qDebug() << "Received cod: " << cod;
         handle_reqests(cod, in, socket);
         // switch
 
@@ -58,7 +58,7 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
             in >> id;
             if(!lobbies[id]->is_ful()){
                 lobbies[id]->add_user(sc);
-                send_figure_to_client(sc);
+                send_figure_to_client(lobbies[id]->get_current_gamer_figure(), sc);
             }
             else{
                 send_error(sc);
@@ -67,7 +67,13 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
     }
 }
 
-void Game_server::send_figure_to_client(QTcpSocket* sc){
+void Game_server::send_figure_to_client(const QChar figure, QTcpSocket* sc){
+    data.clear();
+    QDataStream out{&data, QIODevice::WriteOnly};
+    out.setVersion(QDataStream::Qt_5_9);
+    out << qint8{SEND_LOBBY_SET_COD} << figure;
+    qDebug() << "Cod:" << SEND_LOBBY_SET_COD;
+    sc->write(data);
 
 }
 

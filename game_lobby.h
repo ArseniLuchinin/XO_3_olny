@@ -5,7 +5,7 @@
 #include <QTcpSocket>
 #include <QSharedPointer>
 typedef struct{
-    char figure;
+    QChar figure;
     QTcpSocket* socket;
 } user;
 
@@ -13,7 +13,7 @@ typedef struct{
 class Game_lobby
 {
 private:
-    int8_t user_cont;
+    int8_t user_conter;
     char users_quantity;
     user users[2];
     char game_map[9];
@@ -25,7 +25,7 @@ public:
     Game_lobby();
     void add_user(QTcpSocket*);
     QTcpSocket* get_current_gamer_socket() const;
-
+    QChar get_current_gamer_figure();
     ~Game_lobby();
 };
 

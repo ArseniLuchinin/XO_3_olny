@@ -19,7 +19,7 @@ class Game_server : public QTcpServer
     void send_lobbies_list(QTcpSocket*);
     void handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket *sc);
     void send_error(QTcpSocket *sc);
-    void send_figure_to_client(QTcpSocket *sc);
+    void send_figure_to_client(const QChar, QTcpSocket *sc);
 
 protected:
     QTcpSocket *socket;
