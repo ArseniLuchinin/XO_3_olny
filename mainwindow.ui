@@ -45,7 +45,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="XO_Button" name="pushButton_5">
@@ -66,7 +66,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="XO_Button" name="pushButton_4">
@@ -87,7 +87,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="XO_Button" name="pushButton_7">
@@ -108,7 +108,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="XO_Button" name="pushButton_2">
@@ -129,7 +129,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="XO_Button" name="pushButton_6">
@@ -150,7 +150,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="XO_Button" name="pushButton_8">
@@ -171,7 +171,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="XO_Button" name="pushButton_9">
@@ -192,7 +192,7 @@
        </font>
       </property>
       <property name="text">
-       <string notr="true" extracomment="8">0</string>
+       <string notr="true" extracomment="8">_</string>
       </property>
       <property name="checkable">
        <bool>false</bool>
@@ -216,7 +216,7 @@
        </font>
       </property>
       <property name="text">
-       <string>0</string>
+       <string>_</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_11">

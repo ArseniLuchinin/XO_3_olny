@@ -6,6 +6,7 @@
 #include <QDataStream>
 #include <functional>
 
+#define SEND_ERROR_COD 0
 #define SEND_POS_COD 1
 #define SEND_LOBBIES_COD 2
 #define SEND_LOBBY_SET_COD 3
@@ -24,7 +25,7 @@ public:
     int get_id() const;
     int get_new_pos() const;
     int get_del_pos() const;
-    char get_game_subbol() const;
+    QChar get_game_subbol() const;
     int get_new_lobbie_id() const;
 
     void set_id(const qint8);
@@ -45,7 +46,7 @@ protected:
     qint32 id;
     void connect_with_server();
     QTcpSocket *socket;
-    const char current_figure = 'X';
+    QChar current_figure = 'X';
 
 };
 

@@ -19,7 +19,7 @@ int Game_Client::get_del_pos() const{
     return del_pos;
 }
 
-char Game_Client::get_game_subbol() const{
+QChar Game_Client::get_game_subbol() const{
     return current_figure;
 }
 
@@ -88,5 +88,8 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
             in >> id >> new_pos >> del_pos;
             emit new_figure_position_from_server();
             break;
+        case SEND_LOBBY_SET_COD:
+            in >> current_figure;
+            qDebug() << "Reciver figure: " << current_figure;
     }
 }
