@@ -30,7 +30,7 @@ void Game_server::read_request(){
     if(in.status() == QDataStream::Ok){
         qint8 cod;
         in >> cod;
-        qDebug() << "Received cod: " << cod;
+        //qDebug() << "Received cod: " << cod;
         handle_reqests(cod, in, socket);
         // switch
 
@@ -50,7 +50,7 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
 
         case SEND_POS_COD:
             in >> id >> new_pos >> del_pos;
-            qDebug() << "add:" << id << new_pos << ' ' << del_pos;
+            //qDebug() << "add:" << id << new_pos << ' ' << del_pos;
             send_data_positoin_to_client(id, new_pos, del_pos, socket);
         break;
 
@@ -72,7 +72,7 @@ void Game_server::send_figure_to_client(const QChar figure, QTcpSocket* sc){
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
     out << qint8{SEND_LOBBY_SET_COD} << figure;
-    qDebug() << "Cod:" << SEND_LOBBY_SET_COD;
+    //qDebug() << "Cod:" << SEND_LOBBY_SET_COD;
     sc->write(data);
 
 }
@@ -85,7 +85,7 @@ void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, c
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
-    qDebug() << "send to client" << n << ' ' << d;
+    //qDebug() << "send to client" << n << ' ' << d;
 
     lobbies[id]->add_position(n, d);
 
