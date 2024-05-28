@@ -19,12 +19,25 @@ int Game_Client::get_del_pos() const{
     return del_pos;
 }
 
-QChar Game_Client::get_game_subbol() const{
-    return current_figure;
+QChar Game_Client::get_current_game_subbol() const{
+    if(my_move){
+        return current_figure;
+    }
+    else{
+        return enemy_figure;
+    }
 }
 
 int Game_Client::get_new_lobbie_id() const{
     return tmp_lobby_id;
+}
+
+bool Game_Client::is_my_move() const{
+    return my_move;
+}
+
+QChar Game_Client::get_game_subbol() const{
+    return current_figure;
 }
 
 void Game_Client::set_char_on_pos_from_server(){
@@ -90,6 +103,27 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
             break;
         case SEND_LOBBY_SET_COD:
             in >> current_figure;
-            qDebug() << "Reciver figure: " << current_figure;
+            if(current_figure == 'X'){
+                my_move = true;
+                enemy_figure = 'O';
+            }
+            else{
+                my_move = false;
+                enemy_figure = 'X';
+            }
+            emit new_figure();
+            break;
+        case MOVE_COD:
+            qint8 mv;
+            in >> mv;
+            if(mv == 0){
+                my_move = false;
+            }
+            else{
+                my_move = true;
+            }
+            qDebug() << my_move;
+            break;
     }
 }
+

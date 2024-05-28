@@ -28,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent)
     game = new Game_Client();
     connect(game, &Game_Client::new_figure_position_from_server, this, &MainWindow::new_positon_from_server);
     connect(game, &Game_Client::new_lobbie, this, &MainWindow::add_lobby_bytton);
+    connect(game, &Game_Client::new_figure, this,
+            [this](){
+             ui->label->setText(game->get_game_subbol());
+        });
     game->send_lobbies_reqest();
 }
 
@@ -40,12 +44,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    XO_Button *buttonSender = qobject_cast<XO_Button*>(sender());
-    game->send_pos_to_server(buttonSender->get_index(), 1);
+    //if(game->is_my_move()){
+        XO_Button *buttonSender = qobject_cast<XO_Button*>(sender());
+        game->send_pos_to_server(buttonSender->get_index(), 1);
+    //}
 }
 
 void MainWindow::new_positon_from_server(){
-    buttons[game->get_new_pos()]->setText(QString(game->get_game_subbol()));
+    buttons[game->get_new_pos()]->setText(QString(game->get_current_game_subbol()));
 }
 
 void MainWindow::add_lobby_bytton(){

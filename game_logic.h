@@ -10,6 +10,7 @@
 #define SEND_POS_COD 1
 #define SEND_LOBBIES_COD 2
 #define SEND_LOBBY_SET_COD 3
+#define MOVE_COD 4
 
 class Game_Client : public QObject
 {
@@ -17,14 +18,17 @@ class Game_Client : public QObject
     QByteArray data;
     int tmp_lobby_id;
     void handle_reqest(const qint8 cod, QDataStream&);
+    bool my_move = false;
 
 public:
     Game_Client();
     Game_Client(const char);
 
+    bool is_my_move() const;
     int get_id() const;
     int get_new_pos() const;
     int get_del_pos() const;
+    QChar get_current_game_subbol() const;
     QChar get_game_subbol() const;
     int get_new_lobbie_id() const;
 
@@ -36,6 +40,7 @@ public:
 signals:
     void new_figure_position_from_server();
     void new_lobbie();
+    void new_figure();
 protected slots:
 
     void set_char_on_pos_from_server();
@@ -47,6 +52,7 @@ protected:
     void connect_with_server();
     QTcpSocket *socket;
     QChar current_figure = 'X';
+    QChar enemy_figure = 'O';
 
 };
 
