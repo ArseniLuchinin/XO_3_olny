@@ -10,6 +10,7 @@
 #define SEND_POS_COD 1
 #define SEND_LOBBIES_COD 2
 #define SEND_LOBBY_SET_COD 3
+#define MOVE_COD 4
 
 
 class Game_server : public QTcpServer
@@ -20,7 +21,7 @@ class Game_server : public QTcpServer
     void handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket *sc);
     void send_error(QTcpSocket *sc);
     void send_figure_to_client(const QChar, QTcpSocket *sc);
-
+    void send_move(const qint8);
 protected:
     QTcpSocket *socket;
     QList<Game_lobby*> lobbies;

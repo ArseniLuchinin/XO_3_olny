@@ -40,6 +40,8 @@ void Game_server::read_request(){
     }
 }
 
+
+
 void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* sc){
     qint8 new_pos, del_pos;
     qint32 id;
@@ -51,7 +53,10 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
         case SEND_POS_COD:
             in >> id >> new_pos >> del_pos;
             //qDebug() << "add:" << id << new_pos << ' ' << del_pos;
-            send_data_positoin_to_client(id, new_pos, del_pos, socket);
+            lobbies[id]->add_position(new_pos, del_pos);
+            //send_move(id);
+            send_data_positoin_to_client(id, new_pos, del_pos, lobbies[id]->get_gamer_socket_at_index(0));
+            send_data_positoin_to_client(id, new_pos, del_pos, lobbies[id]->get_gamer_socket_at_index(1));
         break;
 
         case SEND_LOBBY_SET_COD:
@@ -77,6 +82,21 @@ void Game_server::send_figure_to_client(const QChar figure, QTcpSocket* sc){
 
 }
 
+void Game_server::send_move(const qint8 id){
+    data.clear();
+    QDataStream out{&data, QIODevice::WriteOnly};
+    out.setVersion(QDataStream::Qt_5_9);
+    out << qint8{MOVE_COD} << qint8(1);
+
+    int cur_ind = lobbies[id]->get_current_index();
+    lobbies[id]->get_gamer_socket_at_index(cur_ind)->write(data);
+
+    data.clear();
+    out << qint8{MOVE_COD} << qint8(0);
+    cur_ind = 1 - cur_ind;
+    lobbies[id]->get_gamer_socket_at_index(cur_ind)->write(data);
+}
+
 void Game_server::send_error(QTcpSocket* sc){
 
 }
@@ -87,10 +107,7 @@ void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, c
     out.setVersion(QDataStream::Qt_5_9);
     //qDebug() << "send to client" << n << ' ' << d;
 
-    lobbies[id]->add_position(n, d);
-
     out << qint8{SEND_POS_COD} << id << n << d;
-    sc = lobbies[id]->get_current_gamer_socket();
     sc->write(data);
 }
 

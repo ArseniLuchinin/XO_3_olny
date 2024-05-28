@@ -41,10 +41,12 @@ QChar Game_lobby::get_current_gamer_figure() const{
 }
 
 void Game_lobby::add_position(const int8_t new_pos, const int8_t del_pos){
+    user_conter = get_current_gamer_index();
     game_map[new_pos] = current_char;
     //game_map[del_pos] = '_';
-
-    qDebug() << "figure count: " << check_winner(new_pos%3, new_pos/3, 1, 0);
+    if(check_winner(new_pos%3, new_pos/3) == 3){
+        qDebug() << "Winner: " << user_conter;
+    }
 }
 
 void Game_lobby::print_debug_map(){
@@ -54,17 +56,27 @@ void Game_lobby::print_debug_map(){
     }
 }
 
-int8_t Game_lobby::check_winner(const int cur_pos_x, const int cur_pos_y, const int x_check, const int y_check){
+qint8 Game_lobby::get_current_gamer_index(){
+    int bit = (++user_conter >> 0) & 1;
+    return bit;
+}
+
+int Game_lobby::get_current_index() const{
+    return user_conter;
+}
+
+QTcpSocket* Game_lobby::get_gamer_socket_at_index(const qint8 ind) const{
+    return users[ind].socket;
+}
+
+int8_t Game_lobby::check_winner(const int cur_pos_x, const int cur_pos_y){
     int counter = 0;
-    //print_debug_map();
-    //qDebug() << cur_pos_y << "\n";
     for(int i = 0; i < 3; ++i){
         if (game_map[cur_pos_y*3 + i] == current_char){
             ++counter;
 
-        }//qDebug() << "check " << cur_pos_y*3 + i << " " << (char)game_map[cur_pos_y*3 + i];
+        }
     }
-    //qDebug() << "counter:" << counter;
     if (counter == 3)
         return 3;
     counter = 0;
@@ -73,9 +85,26 @@ int8_t Game_lobby::check_winner(const int cur_pos_x, const int cur_pos_y, const 
         if (game_map[cur_pos_x + i*3] == current_char){
             ++counter;
         }
-        //qDebug() << "check " <<  cur_pos_x + i*3 << ' ' << (char)game_map[cur_pos_x + i*3];
     }
-    //qDebug() << "counter:" << counter;
+    if (counter == 3)
+        return 3;
+
+
+    counter = 0;
+
+    for(int i = 0; i < 3; ++i){
+        if (game_map[i*3 + i*1] == current_char){
+            ++counter;
+        }
+    }
+    if (counter == 3)
+        return 3;
+
+    for(int i = 0; i < 3; ++i){
+        if (game_map[2 + i*3 - i*1] == current_char){
+            ++counter;
+        }
+    }
     if (counter == 3)
         return 3;
 
@@ -83,5 +112,5 @@ int8_t Game_lobby::check_winner(const int cur_pos_x, const int cur_pos_y, const 
 }
 
 QTcpSocket* Game_lobby::get_current_gamer_socket() const{
-    return users[0].socket;
+    return users[user_conter].socket;
 }
