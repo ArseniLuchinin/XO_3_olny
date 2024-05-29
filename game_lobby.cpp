@@ -6,7 +6,7 @@ Game_lobby::Game_lobby()
         users[i].socket = nullptr;
     }
 
-    user_conter = -1;
+    user_conter = 0;
     users[0].figure = 'X';
     users[1].figure = 'O';
 
@@ -32,8 +32,7 @@ Game_lobby::~Game_lobby(){
 }
 
 void Game_lobby::add_user(QTcpSocket *n){
-    users[++user_conter].socket = n;
-
+    users[user_conter].socket = n;
 }
 
 QChar Game_lobby::get_current_gamer_figure() const{
@@ -41,7 +40,6 @@ QChar Game_lobby::get_current_gamer_figure() const{
 }
 
 void Game_lobby::add_position(const int8_t new_pos, const int8_t del_pos){
-    user_conter = get_current_gamer_index();
     game_map[new_pos] = current_char;
     //game_map[del_pos] = '_';
     if(check_winner(new_pos%3, new_pos/3) == 3){
@@ -56,9 +54,8 @@ void Game_lobby::print_debug_map(){
     }
 }
 
-qint8 Game_lobby::get_current_gamer_index(){
-    int bit = (++user_conter >> 0) & 1;
-    return bit;
+void Game_lobby::set_next_gamer_index(){
+    user_conter = ( (user_conter + 1) >> 0) & 1;
 }
 
 int Game_lobby::get_current_index() const{

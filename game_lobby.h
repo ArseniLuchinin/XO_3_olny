@@ -16,13 +16,12 @@ private:
     void print_debug_map();
 
     int8_t user_conter;
-    char users_quantity;
     user users[2];
     char game_map[9];
     char current_char;
     int8_t check_winner(const int, const int);
-    int8_t get_current_gamer_index();
 public:
+    void set_next_gamer_index();
     void add_position(const int8_t, const int8_t);
     int get_current_index() const;
     bool is_ful() const;
