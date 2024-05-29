@@ -44,10 +44,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    //if(game->is_my_move()){
+    if(game->is_my_move()){
         XO_Button *buttonSender = qobject_cast<XO_Button*>(sender());
         game->send_pos_to_server(buttonSender->get_index(), 1);
-    //}
+    }
 }
 
 void MainWindow::new_positon_from_server(){

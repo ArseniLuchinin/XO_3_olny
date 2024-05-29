@@ -100,6 +100,11 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
         case SEND_POS_COD:
             in >> id >> new_pos >> del_pos;
             emit new_figure_position_from_server();
+            if(my_move){
+                my_move = false;
+            }else{
+                my_move = true;
+            }
             break;
         case SEND_LOBBY_SET_COD:
             in >> current_figure;
@@ -112,17 +117,6 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
                 enemy_figure = 'X';
             }
             emit new_figure();
-            break;
-        case MOVE_COD:
-            qint8 mv;
-            in >> mv;
-            if(mv == 0){
-                my_move = false;
-            }
-            else{
-                my_move = true;
-            }
-            qDebug() << my_move;
             break;
     }
 }

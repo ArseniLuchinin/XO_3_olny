@@ -10,7 +10,6 @@
 #define SEND_POS_COD 1
 #define SEND_LOBBIES_COD 2
 #define SEND_LOBBY_SET_COD 3
-#define MOVE_COD 4
 
 class Game_Client : public QObject
 {
