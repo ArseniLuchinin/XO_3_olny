@@ -29,10 +29,22 @@ MainWindow::MainWindow(QWidget *parent)
     connect(game, &Game_Client::new_figure_position_from_server, this, &MainWindow::new_positon_from_server);
     connect(game, &Game_Client::new_lobbie, this, &MainWindow::add_lobby_bytton);
     connect(game, &Game_Client::new_figure, this,
-            [this](){
-             ui->label->setText(game->get_game_subbol());
+        [this](){
+        ui->label->setText(game->get_game_subbol());
         });
     connect(game, &Game_Client::clear_map, this, &MainWindow::clear_map);
+
+    connect(game, &Game_Client::gamer_win, this,
+        [this](){
+        ui->stackedWidget->setCurrentIndex(2);
+        ui->label_2->setText("You are win");
+        });
+    connect(game, &Game_Client::gamer_lose, this,
+        [this](){
+        ui->stackedWidget->setCurrentIndex(2);
+        ui->label_2->setText("You are lose");
+        });
+
     game->send_lobbies_reqest();
 }
 
@@ -90,6 +102,12 @@ void MainWindow::clear_lobbies_laoyt(){
 }
 
 void MainWindow::on_pushButton_11_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
+void MainWindow::on_pushButton_12_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 }

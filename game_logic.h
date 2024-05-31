@@ -10,6 +10,7 @@
 #define POSITION_COD 1
 #define LOBBIES_LIST_COD 2
 #define LOBBY_SET_COD 3
+#define FINISH_GAME_COD 4
 
 class Game_Client : public QObject
 {
@@ -41,6 +42,8 @@ signals:
     void new_lobbie();
     void new_figure();
     void clear_map();
+    void gamer_win();
+    void gamer_lose();
 protected slots:
 
     void set_char_on_pos_from_server();

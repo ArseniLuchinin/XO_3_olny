@@ -119,6 +119,18 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
             emit new_figure();
             emit clear_map();
             break;
+
+    case FINISH_GAME_COD:{
+        QChar f;
+        in >> f;
+        if(f == current_figure){
+            emit gamer_win();
+            }
+        else{
+            emit gamer_lose();
+        }
+        }
+        break;
     }
 }
 
