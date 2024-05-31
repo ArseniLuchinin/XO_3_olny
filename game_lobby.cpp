@@ -39,14 +39,6 @@ QChar Game_lobby::get_current_gamer_figure() const{
     return users[user_conter].figure;
 }
 
-void Game_lobby::add_position(const int8_t new_pos, const int8_t del_pos){
-    game_map[new_pos] = current_char;
-    //game_map[del_pos] = '_';
-    if(check_winner(new_pos%3, new_pos/3) == 3){
-        qDebug() << "Winner: " << user_conter;
-    }
-}
-
 void Game_lobby::print_debug_map(){
     qDebug() << "____________________";
     for(int i = 0; i < 3; ++i){
@@ -65,8 +57,13 @@ int Game_lobby::get_current_index() const{
 QTcpSocket* Game_lobby::get_gamer_socket_at_index(const qint8 ind) const{
     return users[ind].socket;
 }
+void Game_lobby::add_position(const int8_t new_pos, const int8_t del_pos){
+    game_map[new_pos] = get_current_gamer_figure();
+    //game_map[del_pos] = ' ';
+}
 
 int8_t Game_lobby::check_winner(const int cur_pos_x, const int cur_pos_y){
+    QChar current_char = get_current_gamer_figure();
     int counter = 0;
     for(int i = 0; i < 3; ++i){
         if (game_map[cur_pos_y*3 + i] == current_char){
@@ -97,6 +94,7 @@ int8_t Game_lobby::check_winner(const int cur_pos_x, const int cur_pos_y){
     if (counter == 3)
         return 3;
 
+    counter = 0;
     for(int i = 0; i < 3; ++i){
         if (game_map[2 + i*3 - i*1] == current_char){
             ++counter;

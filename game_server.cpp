@@ -6,8 +6,9 @@ Game_server::Game_server()
 {
     if(this->listen(QHostAddress::LocalHost, 123)){
         qDebug() << "Serever is started";
-        for(int i = 0; i < 5; ++i)
+        for(int i = 0; i < 5; ++i){
             lobbies.append(new Game_lobby());
+        }
     }
     else{
         qDebug() << "Server error";
@@ -54,6 +55,11 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
             in >> id >> new_pos >> del_pos;
             //qDebug() << "add:" << id << new_pos << ' ' << del_pos;
             lobbies[id]->add_position(new_pos, del_pos);
+            if(lobbies[id]->check_winner(new_pos%3, new_pos/3) == 3){
+                qDebug() << "Winner: " << lobbies[id]->get_current_index();
+                send_winned_figure(id);
+                break;
+            }
             //send_move(id);
             send_data_positoin_to_client(id, new_pos, del_pos, lobbies[id]->get_gamer_socket_at_index(0));
             send_data_positoin_to_client(id, new_pos, del_pos, lobbies[id]->get_gamer_socket_at_index(1));
@@ -83,6 +89,15 @@ void Game_server::send_figure_to_client(const QChar figure, QTcpSocket* sc){
     sc->write(data);
 }
 
+void Game_server::send_winned_figure(int id){
+    data.clear();
+    QDataStream out{&data, QIODevice::WriteOnly};
+    out.setVersion(QDataStream::Qt_5_9);
+    out << qint8{FINISH_GAME_COD} << lobbies[id]->get_current_gamer_figure();
+
+    lobbies[id]->get_gamer_socket_at_index(0)->write(data);
+    lobbies[id]->get_gamer_socket_at_index(1)->write(data);
+}
 
 void Game_server::send_error(QTcpSocket* sc){
     data.clear();
