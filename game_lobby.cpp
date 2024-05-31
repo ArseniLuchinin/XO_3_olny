@@ -11,7 +11,7 @@ Game_lobby::Game_lobby()
     users[1].figure = 'O';
 
     for(int i = 0; i < 9; ++i){
-        game_map[i] = '_';
+        game_map[i] = ' ';
     }
 
 }

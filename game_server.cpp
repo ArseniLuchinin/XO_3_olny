@@ -46,11 +46,11 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
     qint8 new_pos, del_pos;
     qint32 id;
     switch (cod) {
-        case SEND_LOBBIES_COD:
+        case LOBBIES_LIST_COD:
             send_lobbies_list(socket);
         break;
 
-        case SEND_POS_COD:
+        case POSITION_COD:
             in >> id >> new_pos >> del_pos;
             //qDebug() << "add:" << id << new_pos << ' ' << del_pos;
             lobbies[id]->add_position(new_pos, del_pos);
@@ -60,7 +60,7 @@ void Game_server::handle_reqests(const qint8 cod, QDataStream& in, QTcpSocket* s
             lobbies[id]->set_next_gamer_index();
         break;
 
-        case SEND_LOBBY_SET_COD:
+        case LOBBY_SET_COD:
             in >> id;
             if(!lobbies[id]->is_ful()){
                 lobbies[id]->add_user(sc);
@@ -78,14 +78,18 @@ void Game_server::send_figure_to_client(const QChar figure, QTcpSocket* sc){
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
-    out << qint8{SEND_LOBBY_SET_COD} << figure;
+    out << qint8{LOBBY_SET_COD} << figure;
     //qDebug() << "Cod:" << SEND_LOBBY_SET_COD;
     sc->write(data);
 }
 
 
 void Game_server::send_error(QTcpSocket* sc){
-
+    data.clear();
+    QDataStream out{&data, QIODevice::WriteOnly};
+    out.setVersion(QDataStream::Qt_5_9);
+    out << qint8{ERROR_COD};
+    sc->write(data);
 }
 
 void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, const qint8 d, QTcpSocket* sc){
@@ -94,7 +98,7 @@ void Game_server::send_data_positoin_to_client(const qint32 id, const qint8 n, c
     out.setVersion(QDataStream::Qt_5_9);
     //qDebug() << "send to client" << n << ' ' << d;
 
-    out << qint8{SEND_POS_COD} << id << n << d;
+    out << qint8{POSITION_COD} << id << n << d;
     sc->write(data);
 }
 
@@ -102,7 +106,7 @@ void Game_server::send_lobbies_list(QTcpSocket* sc){
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
-    out << qint8{SEND_LOBBIES_COD};
+    out << qint8{LOBBIES_LIST_COD};
     qint32 h = 0;
     out << qint32{h};
     for(int i = 0; i < lobbies.length(); ++i){
