@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
             [this](){
              ui->label->setText(game->get_game_subbol());
         });
+    connect(game, &Game_Client::clear_map, this, &MainWindow::clear_map);
     game->send_lobbies_reqest();
 }
 
@@ -46,16 +47,18 @@ void MainWindow::on_pushButton_clicked()
 {
     if(game->is_my_move()){
         XO_Button *buttonSender = qobject_cast<XO_Button*>(sender());
-        game->send_pos_to_server(buttonSender->get_index(), 1);
+        if(!buttonSender->is_select()){
+            game->send_pos_to_server(buttonSender->get_index(), 1);
+        }
     }
 }
 
 void MainWindow::new_positon_from_server(){
-    buttons[game->get_new_pos()]->setText(QString(game->get_current_game_subbol()));
+    buttons[game->get_new_pos()]->select(QString(game->get_current_game_subbol()));
 }
 
 void MainWindow::add_lobby_bytton(){
-    lobbie_button* lb = new lobbie_button(
+    Lobby_button* lb = new Lobby_button(
                 game->get_new_lobbie_id(),
                 "Game lobby #" +  QString::number(game->get_new_lobbie_id())
                 );
@@ -63,7 +66,6 @@ void MainWindow::add_lobby_bytton(){
     connect(lb, &QPushButton::clicked, this, [lb, this](){
         game->set_id(lb->get_lobby_id());
         ui->stackedWidget->setCurrentIndex(0);
-
     });
 }
 
@@ -72,6 +74,11 @@ void MainWindow::on_pushButton_10_clicked()
     clear_lobbies_laoyt();
     game->send_lobbies_reqest();
     qDebug() << game->get_id();
+}
+
+void MainWindow::clear_map(){
+    for(XO_Button* &p : buttons)
+        p->unselect();
 }
 
 void MainWindow::clear_lobbies_laoyt(){

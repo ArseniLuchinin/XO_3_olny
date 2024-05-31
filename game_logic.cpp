@@ -48,7 +48,7 @@ void Game_Client::set_id(const qint8 di){
     id = di;
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
-    out << qint8{SEND_LOBBY_SET_COD} << id;
+    out << qint8{LOBBY_SET_COD} << id;
     socket->write(data);
 }
 
@@ -58,7 +58,7 @@ void Game_Client::send_pos_to_server(const qint8 n, const qint8 d){
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
     //qDebug() << "send to serv: " << n << " " << d;
-    out << qint8{SEND_POS_COD} << id << n << d;
+    out << qint8{POSITION_COD} << id << n << d;
     socket->write(data);
 }
 
@@ -66,7 +66,7 @@ void Game_Client::send_lobbies_reqest(){
     data.clear();
     QDataStream out{&data, QIODevice::WriteOnly};
     out.setVersion(QDataStream::Qt_5_9);
-    out << qint8{SEND_LOBBIES_COD};
+    out << qint8{LOBBIES_LIST_COD};
     socket->write(data);
 }
 
@@ -89,7 +89,7 @@ void Game_Client::read_server(){
 
 void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
     switch (cod) {
-        case SEND_LOBBIES_COD:
+        case LOBBIES_LIST_COD:
             qint32 len;
             in >> len;
             for(int i = 0; i < len; ++i){
@@ -97,7 +97,7 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
                 emit new_lobbie();
             }
             break;
-        case SEND_POS_COD:
+        case POSITION_COD:
             in >> id >> new_pos >> del_pos;
             emit new_figure_position_from_server();
             if(my_move){
@@ -106,7 +106,7 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
                 my_move = true;
             }
             break;
-        case SEND_LOBBY_SET_COD:
+        case LOBBY_SET_COD:
             in >> current_figure;
             if(current_figure == 'X'){
                 my_move = true;
@@ -117,6 +117,7 @@ void Game_Client::handle_reqest(const qint8 cod, QDataStream& in){
                 enemy_figure = 'X';
             }
             emit new_figure();
+            emit clear_map();
             break;
     }
 }

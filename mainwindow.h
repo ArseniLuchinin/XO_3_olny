@@ -28,6 +28,7 @@ private slots:
     void on_pushButton_11_clicked();
 
 private:
+    void clear_map();
     Game_Client *game;
     Ui::MainWindow *ui;
     QList <XO_Button*>buttons{};

@@ -6,10 +6,10 @@
 #include <QDataStream>
 #include <functional>
 
-#define SEND_ERROR_COD 0
-#define SEND_POS_COD 1
-#define SEND_LOBBIES_COD 2
-#define SEND_LOBBY_SET_COD 3
+#define ERROR_COD 0
+#define POSITION_COD 1
+#define LOBBIES_LIST_COD 2
+#define LOBBY_SET_COD 3
 
 class Game_Client : public QObject
 {
@@ -40,6 +40,7 @@ signals:
     void new_figure_position_from_server();
     void new_lobbie();
     void new_figure();
+    void clear_map();
 protected slots:
 
     void set_char_on_pos_from_server();
